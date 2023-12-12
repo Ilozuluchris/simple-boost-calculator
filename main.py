@@ -23,7 +23,7 @@ def run():
 
     st.number_input("No of weeks to lock", key="lock_time", step=1, min_value=0, max_value=52)
 
-    st.button("Calculate claim", on_click=display_boost, args=[st.session_state['claimant'], st.session_state['lock_time'], st.session_state['lock_amount']])
+    st.button("Calculate Boost", on_click=display_boost, args=[st.session_state['claimant'], st.session_state['lock_time'], st.session_state['lock_amount']])
 
     st.text_input("Boost Calculated", key="boost")
     st.caption("Actual amount would be between 50% - 100% of calculated amount")
