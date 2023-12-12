@@ -115,6 +115,7 @@ def get_total_emissions(week, current_week):
 
 
 def boost_calc(claimant, weeks_to_be_locked, amount_to_be_locked):
+    claimant = w3.to_checksum_address(claimant)
     system_week = get_current_week()
     week = system_week + weeks_to_be_locked
     total_emissions = get_total_emissions(week, system_week)
