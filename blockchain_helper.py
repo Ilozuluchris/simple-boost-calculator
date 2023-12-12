@@ -114,24 +114,24 @@ def get_total_emissions(week, current_week):
     return get_emission_for_week(week)
 
 
-def boost_calc(claimant, weeks_in_future):
-    current_week = get_current_week()
-    week = current_week + weeks_in_future
-    total_emissions = get_total_emissions(week, current_week)
+def boost_calc(claimant, weeks_to_be_locked, amount_to_be_locked):
+    system_week = get_current_week()
+    week = system_week + weeks_to_be_locked
+    total_emissions = get_total_emissions(week, system_week)
 
-    return boost_calc_from_contract(claimant, 0, total_emissions, week, current_week)
+    return boost_calc_from_contract(claimant, 0, total_emissions, system_week, weeks_to_be_locked,  amount_to_be_locked)
 
-def boost_calc_from_contract(claimant, previous_amount, total_weekly_emissions, week, current_week):
+def boost_calc_from_contract(claimant, previous_amount, total_weekly_emissions, system_week, lock_weeks, lock_amount):
     max_boost_week = boost_contract.functions.MAX_BOOST_GRACE_WEEKS().call()
 
+    week = system_week + lock_weeks
     if week < max_boost_week:
         remaining_amount = total_weekly_emissions - previous_amount
         return remaining_amount, remaining_amount
 
-    current_week = current_week - 1
+    current_week = system_week - 1
 
-    account_weight = get_account_weight(claimant, current_week)
-    total_weight = get_total_weight(current_week)
+    account_weight, total_weight = get_weights_to_be_used(claimant, current_week, lock_weeks, lock_amount)
 
     if total_weight == 0: total_weight = 1
     pct = (1e9 * account_weight) / total_weight
@@ -145,3 +145,14 @@ def boost_calc_from_contract(claimant, previous_amount, total_weekly_emissions, 
     boosted = 0 if previous_amount >= full_decay else full_decay - max_boostable
 
     return max_boosted, boosted
+
+
+def get_weights_to_be_used(claimant, current_week,weeks_to_be_locked, amount_to_be_locked):
+    account_weight = get_account_weight(claimant, current_week)
+    total_weight = get_total_weight(current_week)
+
+    #get new weight
+    additional_weight = (amount_to_be_locked * weeks_to_be_locked)
+    account_weight += additional_weight
+    total_weight += additional_weight
+    return account_weight, total_weight
