@@ -11,7 +11,8 @@ def display_boost(claimant, number_of_weeks, token_amount_to_lock):
    max_boost, normal_boost = get_boost(claimant, number_of_weeks, token_amount_to_lock)
    print(max_boost)
    print(normal_boost)
-   st.session_state['boost'] = f"Boost would be {int(normal_boost/1e18)}"
+   num_in_thousands = (normal_boost / 1e18) / 1000
+   st.session_state['boost'] = f"Boost would be {round(num_in_thousands,2)}k"
 
 def run():
 
@@ -26,7 +27,7 @@ def run():
     st.button("Calculate Boost", on_click=display_boost, args=[st.session_state['claimant'], st.session_state['lock_time'], st.session_state['lock_amount']])
 
     st.text_input("Boost Calculated", key="boost")
-    st.caption("Actual amount would be between 50% - 100% of calculated amount")
+    st.caption("Boost amount at week specified. Actual amount would be between 50% - 100% of calculated amount and changes per week ")
 
 if __name__ == "__main__":
     run()
