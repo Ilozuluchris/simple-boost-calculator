@@ -11,7 +11,7 @@ def display_boost(claimant, number_of_weeks, token_amount_to_lock):
    max_boost, normal_boost = get_boost(claimant, number_of_weeks, token_amount_to_lock)
    print(max_boost)
    print(normal_boost)
-   st.session_state['boost'] = f"Boost would be {normal_boost}"
+   st.session_state['boost'] = f"Boost would be {normal_boost/1e18}"
 
 def run():
 
